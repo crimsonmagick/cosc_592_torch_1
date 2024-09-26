@@ -34,7 +34,7 @@ class MLP(nn.Module):
 
 
 input_size = 28 * 28
-hidden_size = 128
+hidden_size = 1
 num_classes = 10
 model = MLP(input_size, hidden_size, num_classes)
 print(model)
