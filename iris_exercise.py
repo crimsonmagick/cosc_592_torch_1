@@ -14,7 +14,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_test = scaler.fit_transform(X_test)
 
 X_train = torch.tensor(X_train, dtype=torch.float32)
 y_train = torch.tensor(y_train, dtype=torch.long)
@@ -47,7 +47,7 @@ batch_size = 16
 train_dataset = TensorDataset(X_train, y_train)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
-num_epochs = 100
+num_epochs = 1000
 for epoch in range(num_epochs):
     for batch_X, batch_y in train_loader:
         outputs = model(batch_X)
