@@ -8,6 +8,22 @@ from torch import nn, optim
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 
+
+class MlpMnist(nn.Module):
+    def __init__(self, input_size, hidden_size, num_classes):
+        super().__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(hidden_size, num_classes)
+
+    def forward(self, x):
+        x = x.view(-1, 28 * 28)
+        out = self.fc1(x)
+        out = self.relu(out)
+        out = self.fc2(out)
+        return out
+
+
 # device = torch_directml.device() if torch_directml.is_available() else torch.device("cpu")
 device = torch.device("cpu")
 # device = torch_directml.device()
@@ -24,32 +40,16 @@ batch_size = 64
 train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
 
-
-class MLP(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
-        super().__init__()
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, num_classes)
-
-    def forward(self, x):
-        x = x.view(-1, 28 * 28)
-        out = self.fc1(x)
-        out = self.relu(out)
-        out = self.fc2(out)
-        return out
-
-
 input_size = 28 * 28
 hidden_size = 128
 num_classes = 10
-model = MLP(input_size, hidden_size, num_classes).to(device)
+model = MlpMnist(input_size, hidden_size, num_classes).to(device)
 print(model)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 # optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-num_epochs = 10
+num_epochs = 5
 before_all = time.time()
 for epoch in range(num_epochs):
     before_epoch = time.time()
