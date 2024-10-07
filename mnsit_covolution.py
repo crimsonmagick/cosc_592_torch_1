@@ -5,14 +5,20 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
+from metrics_recorder import MetricsRecorder
+
 
 class SimpleCnnMnist(nn.Module):
     def __init__(self):
         super().__init__()
+        # 1 input channels, 8 out - padding 1
         self.conv1 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
         self.relu = nn.ReLU()
+        # kernel size and stride for pooling
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(8, 16, kernel_size=3, padding=1)
+        # spatial dimensions of the feature map are reduced to 7x7, and there are 16 such feature maps
+        # 10 characters to choose from
         self.fc1 = nn.Linear(16 * 7 * 7, 10)
 
     def forward(self, x):
@@ -102,6 +108,7 @@ def main():
 
     num_epochs = 5
 
+    mr = MetricsRecorder().start()
     for epoch in range(num_epochs):
         train_loss, train_acc = train(cnn_model, train_loader, criterion, optimizer)
         test_loss, test_acc = evaluate(cnn_model, test_loader, criterion)
@@ -112,6 +119,8 @@ def main():
     test_loss, test_acc = evaluate(cnn_model, test_loader, criterion)
     print("\nFinal Evaluation on Test Set:")
     print(f'Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2f}%')
+    _, duration = mr.end().get_metrics()
+    print(f'Duration: {duration} ms')
 
 
 if __name__ == "__main__":

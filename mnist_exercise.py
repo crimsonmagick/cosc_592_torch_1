@@ -8,6 +8,8 @@ from torch import nn, optim
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 
+from metrics_recorder import MetricsRecorder
+
 
 class MlpMnist(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes):
